@@ -185,16 +185,28 @@ def inspect_notebook(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Inspect, export, or sync a Jupyter notebook (.ipynb).")
+    parser = argparse.ArgumentParser(
+        description="Inspect, export, or sync a Jupyter notebook (.ipynb).",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "examples:\n"
+            "  ipynb_sync.py nb.ipynb\n"
+            "  ipynb_sync.py nb.ipynb --cell 1 --outputs\n"
+            "  ipynb_sync.py nb.ipynb --pattern \"AUC|FAST_EVAL\" --outputs\n"
+            "  ipynb_sync.py nb.ipynb --export-outputs outputs.log\n"
+            "  ipynb_sync.py nb.ipynb --export-py review.py\n"
+            "  ipynb_sync.py nb.ipynb --import-py review.py --backup"
+        ),
+    )
     parser.add_argument("notebook", type=Path, help="Path to the .ipynb file.")
     parser.add_argument("--cell", type=int, default=None, help="Dump full source of a specific cell index.")
     parser.add_argument("--pattern", type=str, default=None, help="Regex pattern to search across cell sources (and outputs with --outputs).")
-    parser.add_argument("--outputs", action="store_true", help="Include cell outputs when dumping, listing, or searching with --pattern.")
+    parser.add_argument("--outputs", action="store_true", help="Dump cell outputs (for all cells, a single --cell, or matches with --pattern).")
     parser.add_argument("--export-outputs", type=Path, default=None, help="Export all non-empty cell outputs to a plain text log file.")
-    parser.add_argument("--export-py", type=Path, default=None, help="Export all code cells into a .py file with `# %% Cell <idx>` markers.")
-    parser.add_argument("--import-py", type=Path, default=None, help="Sync `# %% Cell <idx>` code blocks from a .py file back into the notebook.")
-    parser.add_argument("--export-md", type=Path, default=None, help="Export all markdown cells into a .md file with `<!-- %% Cell <idx> -->` markers.")
-    parser.add_argument("--import-md", type=Path, default=None, help="Sync `<!-- %% Cell <idx> -->` markdown blocks from a .md file back into the notebook.")
+    parser.add_argument("--export-py", type=Path, default=None, help="Export all code cells into a .py file with `# %%%% Cell <idx>` markers.")
+    parser.add_argument("--import-py", type=Path, default=None, help="Sync `# %%%% Cell <idx>` code blocks from a .py file back into the notebook.")
+    parser.add_argument("--export-md", type=Path, default=None, help="Export all markdown cells into a .md file with `<!-- %%%% Cell <idx> -->` markers.")
+    parser.add_argument("--import-md", type=Path, default=None, help="Sync `<!-- %%%% Cell <idx> -->` markdown blocks from a .md file back into the notebook.")
     parser.add_argument("--backup", action="store_true", help="Create a .bak copy before modifying the notebook with --import-py or --import-md.")
     args = parser.parse_args()
     if args.export_outputs is not None:
