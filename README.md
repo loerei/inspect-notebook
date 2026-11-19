@@ -21,17 +21,20 @@ This script splits the workflow into three steps:
 ### 1. Inspect cells, search, or read outputs
 
 ```bash
-# List all cells with line counts and output counts
+# List all cells with execution counts, line counts, and output counts
 python inspect_notebook.py notebook.ipynb
 
-# Search across all cell sources by regex
-python inspect_notebook.py notebook.ipynb --pattern "roc_auc_score|FAST_EVAL"
+# Search across all cell sources by regex (add --outputs to also search cell outputs)
+python inspect_notebook.py notebook.ipynb --pattern "roc_auc_score|FAST_EVAL" --outputs
 
-# Print a specific cell (and its saved outputs, including error tracebacks)
+# Print a specific cell (and its saved outputs, including error tracebacks and MIME sizes)
 python inspect_notebook.py notebook.ipynb --cell 1 --outputs
 
 # Print all non-empty cell outputs across the notebook
 python inspect_notebook.py notebook.ipynb --outputs
+
+# Export all non-empty cell outputs to a plain text log file
+python inspect_notebook.py notebook.ipynb --export-outputs outputs.log
 ```
 
 ### 2. Export, edit, and sync code cells
